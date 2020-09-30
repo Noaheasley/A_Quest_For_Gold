@@ -17,10 +17,10 @@ namespace HelloWorld
             _name = "Hero";
             _damage = 10;
         }
-        public Character(float healthVal, string nameVal, float damageVal)
+        public Character(string nameVal, float healthVal, float damageVal)
         {
-            _health = healthVal;
             _name = nameVal;
+            _health = healthVal;
             _damage = damageVal;
         }
 

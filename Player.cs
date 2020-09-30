@@ -20,7 +20,7 @@ namespace HelloWorld
         }
 
         public Player(string nameVal, float healthVal, float damageVal, int inventorySize)
-            : base(healthVal, nameVal, damageVal)
+            : base( nameVal, healthVal, damageVal)
         {
             _inventory = new Item[inventorySize];
             _hands._name = "fists";
@@ -51,6 +51,16 @@ namespace HelloWorld
             {
                 _currentWeapon = _inventory[itemIndex];
             }
+        }
+
+        public override float Attack(Character enemy)
+        {
+            float totalDamage = _damage + _currentWeapon._statBoost;
+            return base.Attack(enemy);
+        }
+        public Item[] GetInv()
+        {
+            return _inventory;
         }
     }
 }

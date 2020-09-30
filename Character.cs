@@ -10,18 +10,28 @@ namespace HelloWorld
         private float _health;
         private string _name;
         protected float _damage;
+        private float _gold;
 
         public Character()
         {
             _health = 100;
             _name = "Hero";
             _damage = 10;
+            _gold = 10;
         }
-        public Character(string nameVal, float healthVal, float damageVal)
+
+        public void GoldGain(Player player, Character enemy)
+        {
+            Console.WriteLine(player._name + " has gained" + enemy._gold + " gold!");
+            player._gold += enemy._gold;
+        }
+
+        public Character(string nameVal, float healthVal, float damageVal, float goldVal)
         {
             _name = nameVal;
             _health = healthVal;
             _damage = damageVal;
+            _gold = goldVal;
         }
 
         public virtual float Attack(Character enemy)
@@ -31,7 +41,7 @@ namespace HelloWorld
 
         public virtual float TakeDamage(float damageVal)
         {
-            _health -= damageVal;
+            _health -= damageVal ;
             if(_health < 0)
             {
                 _health = 0;
@@ -84,8 +94,16 @@ namespace HelloWorld
         public void PrintStats()
         {
             Console.WriteLine("[" + _name + "]");
-            Console.WriteLine("Health:" + _health);
-            Console.WriteLine("Damage:" + _damage);
+            Console.WriteLine("Health: " + _health);
+            Console.WriteLine("Damage: " + _damage);
+            Console.WriteLine("Gold: " + _gold);
+        }
+        public void PrintPlayerStats(Player player)
+        {
+            Console.WriteLine("[" + _name + "]");
+            Console.WriteLine("Health: " + _health);
+            Console.WriteLine("Damage: " + _damage);
+            Console.WriteLine("Gold: " + _gold);
         }
     }
 }

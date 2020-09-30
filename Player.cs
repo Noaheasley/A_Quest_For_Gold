@@ -14,17 +14,19 @@ namespace HelloWorld
         public Player() : base()
         {
             _inventory = new Item[3];
-
+            _gold = 10;
+            _inventory = new Item[3];
             _hands._name = "fists";
             _hands._statBoost = 0;
         }
 
-        public Player(string nameVal, float healthVal, float damageVal, int inventorySize)
-            : base( nameVal, healthVal, damageVal)
+        public Player(string nameVal, float healthVal, float damageVal, int inventorySize, float coinVal)
+            : base( nameVal, healthVal, damageVal, coinVal)
         {
             _inventory = new Item[inventorySize];
             _hands._name = "fists";
             _hands._statBoost = 0;
+            coinVal = _gold;
         }
 
         public void UnequipItem()
@@ -53,14 +55,35 @@ namespace HelloWorld
             }
         }
 
+        public bool Buy(Item item, int inventoryIndex)
+        {
+            if(_gold >= item._cost)
+            {
+                _gold -= item._cost;
+                _inventory[inventoryIndex] = item;
+                return true;
+            }
+            return false;
+        }
+
+        public int GetGold()
+        {
+            return _gold;
+        }
         public override float Attack(Character enemy)
         {
             float totalDamage = _damage + _currentWeapon._statBoost;
-            return base.Attack(enemy);
+            return enemy.TakeDamage(totalDamage);
         }
+        
         public Item[] GetInv()
         {
             return _inventory;
         }
+        public int GetStat()
+        {
+            return _currentWeapon._statBoost;
+        }
+      
     }
 }

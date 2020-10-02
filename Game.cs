@@ -16,6 +16,9 @@ namespace HelloWorld
         private bool _gameOver = false;
         private Shop _shop;
         private Player _player1;
+        private Item _teeth;
+        private Item _gSpear;
+        private Item _dagger;
         private Item _longSword;
         private Item _claymore;
         private Item _bow;
@@ -23,9 +26,9 @@ namespace HelloWorld
         private Item _enchantedSword;
         private Item _zweihandler;
         private Item[] _shopInventory;
-        private Character _wolf;
-        private Character _goblin;
-        private Character _theif;
+        private Enemy _wolf;
+        private Enemy _goblin;
+        private Enemy _theif;
         //Run the game
         public void Run()
         {
@@ -48,6 +51,8 @@ namespace HelloWorld
             
             _shopInventory = new Item[] { _crossBow, _enchantedSword, _zweihandler };
             _shop = new Shop(_shopInventory);
+
+            
         }
 
         
@@ -111,12 +116,21 @@ namespace HelloWorld
             reader.Close();
         }
 
-        //prints the inventory of either the player or shop
-        public void PrintInv(Item[] inventory)
+        //prints the inventory of the shop
+        public void PrintShopInv(Item[] inventory)
         {
+            //displays items and their value
             for(int i = 0; i < inventory.Length; i++)
             {
-                Console.WriteLine((i + 1) + ". " + inventory[i]._name + " costs: " + inventory[i]._cost + "gold");
+                Console.WriteLine((i + 1) + ". " + inventory[i]._name + " costs: " + inventory[i]._cost + " gold");
+            }
+        }
+        public void PrintPlayerInv(Item[] inventory)
+        {
+            //displays items and their value
+            for (int i = 0; i < inventory.Length; i++)
+            {
+                Console.WriteLine((i + 1) + ". " + inventory[i]._name);
             }
         }
         //opens the shop menu
@@ -124,7 +138,7 @@ namespace HelloWorld
         {
             Console.WriteLine("welcome to my humble shop fair traveler");
             //prints the shops inventory
-            PrintInv(_shopInventory);
+            PrintShopInv(_shopInventory);
             char input = Console.ReadKey().KeyChar;
 
             int itemIndex = -1;
@@ -159,7 +173,7 @@ namespace HelloWorld
             }
 
             //prints the players inventory
-            PrintInv(_player1.GetInv());
+            PrintPlayerInv(_player1.GetInv());
             input = Console.ReadKey().KeyChar;
             //shows the inventory of the player that the player can use to place bought items
             int playerIndex = -1;
@@ -192,7 +206,7 @@ namespace HelloWorld
         public void OpenMainMenu()
         {
             char input;
-            GetInput(out input, "create character", "load character", "what doyou want to do");
+            GetInput(out input, "create character", "load character", "what do you want to do");
             if (input == '2')
             {
                 _player1 = new Player();
@@ -206,11 +220,11 @@ namespace HelloWorld
         {
             Console.WriteLine("What is your name?");
             string name = Console.ReadLine();
-            player = new Player(name, 100, 10, 3, 10);
+            player = new Player(name, 100, 10, 3, 0);
         }
 
         //starts a battle for each floor
-        public bool startBattle(Player player, Character enemy)
+        public bool startBattle(Player player, Enemy enemy)
         {
             //while both characters are alive the battle continues looping
             while(player.GetIsAlive() && enemy.GetIsAlive())
@@ -245,17 +259,9 @@ namespace HelloWorld
                     
                     return _gameOver = false;
                 }
-                //prints the stats of the player and enemy
-                Console.WriteLine("[" + player.GetName() + "'s stats");
-                player.PrintPlayerStats(_player1);
-                Console.WriteLine("[" + enemy.GetName() + "'s stats");
-                enemy.PrintStats();
-                Console.WriteLine("[Press any button to continue]");
-                Console.ReadKey();
-                Console.Clear();
-
+                
                 //enemy attacks the player
-                float PlayerDamageTaken = enemy.Attack(player);
+                float PlayerDamageTaken = enemy.EnemyAttack(player);
                 Console.WriteLine(enemy.GetName() + " did " + PlayerDamageTaken + " damage.");
 
                 //checks if the player dies
@@ -266,7 +272,7 @@ namespace HelloWorld
                 }
 
                 //prints the stats of the player and enemy
-                Console.WriteLine("[" + player.GetName() + "'s stats");
+                Console.WriteLine("\n[" + player.GetName() + "'s stats]");
                 player.PrintPlayerStats(_player1);
                 Console.WriteLine("[" + enemy.GetName() + "'s stats");
                 enemy.PrintStats();
@@ -281,15 +287,30 @@ namespace HelloWorld
         //Initalizes the enemy characters
         public void InitalizeCharacters()
         {
-            _wolf = new Character("wolf", 20, 5, 5);
-            _goblin = new Character("Goblin", 20, 10, 10);
-            _theif = new Character("Theif", 25, 15, 15);
+            _wolf = new Enemy("Wolf", 40, 5, 2, 5);
+            _wolf.AddItemToInv(_teeth, 0);
+            _wolf.EnemyEquipItem(0);
+            _goblin = new Enemy("Goblin", 40, 10, 2, 15);
+            _goblin.AddItemToInv(_gSpear, 0);
+            _goblin.EnemyEquipItem(0);
+            _theif = new Enemy("Theif", 50, 15, 2, 25);
+            _theif.AddItemToInv(_dagger, 0);
+            _theif.EnemyEquipItem(0);
         }
 
         
 
         public void InitalizeItems()
         {
+            _teeth._name = "Bite";
+            _teeth._statBoost = 10;
+            _teeth._cost = 0;
+            _gSpear._name = "Goblin's Spear";
+            _gSpear._statBoost = 5;
+            _gSpear._cost = 0;
+            _dagger._name = "Dagger";
+            _dagger._statBoost = 5;
+            _dagger._cost = 0;
             _longSword._name = "Longsword";
             _longSword._statBoost = 15;
             _longSword._cost = 5;
@@ -310,7 +331,7 @@ namespace HelloWorld
             _zweihandler._cost = 20;
         }
 
-        //traverses through the rooms
+        //function for the player to traverse through rooms with an enemy to fight
         void Traverse(int roomNum)
         {
             switch(roomNum)
@@ -346,24 +367,28 @@ namespace HelloWorld
             
             _gameOver = true;
         }
-
+        //starts the player with a loadout of basic weapons
         public void GiveBasicLoadout(Player player)
         {
             player.AddItemToInv(_longSword, 0);
             player.AddItemToInv(_bow, 1);
             player.AddItemToInv(_claymore, 2);
         }
+        //funtion for the player to swap weapons when they need
         public void SwitchWeapons(Player player)
         {
+            //gains access to the player's inventory
             Item[] inventory = player.GetInv();
 
             char input = ' ';
+            //displays all items in the inventory along with their damage boost
             for(int i = 0; i < inventory.Length; i++)
             {
-                Console.WriteLine((i + 1) + ". " + inventory[i]._name + " \n Damage: " + inventory[i]._statBoost);
+                Console.WriteLine((i + 1) + ". " + inventory[i]._name + " \n Damage boosted by: " + inventory[i]._statBoost);
             }
             Console.WriteLine(">");
             input = Console.ReadKey().KeyChar;
+            //allows players to enter an input to get their desired weapon
             switch(input)
             {
                 case '1':
@@ -387,6 +412,7 @@ namespace HelloWorld
                         Console.WriteLine("Base damage increased by: " + inventory[2]._statBoost);
                         break;
                     }
+                    //if there is a miss input the player will enter an unarmed state
                 default:
                     {
                         player.UnequipItem();
@@ -400,15 +426,20 @@ namespace HelloWorld
         public void Update()
         {
             Traverse(1);
+            Save();
             Traverse(2);
+            Save();
             Traverse(3);
+            Save();
             OpenShopMenu();
         }
 
         //Performed once when the game ends
         public void End()
         {
-            
+            Console.WriteLine("Congraulations! You've successfully completed your hard journey to the store, but... you forgot the milk, why did you buy a weapon again?");
+            Console.WriteLine("\n");
+            PrintPlayerInv(_player1.GetInv());
         }
     }
 }

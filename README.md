@@ -26,8 +26,5 @@ once you buy something the game will end and your character will return home wit
 
 ## Shop(Inputs)
 
-<<<<<<< HEAD
  Press any keys that appear next to the items to buy an item. This will send you to your inventory which shows off all the items that you own. Press any number key that is next to the items in the inventory to swap the item with the item you bought.
-=======
- Press any keys that appear next to the items to buy an item. This will send you to your inventory which shows off all the items that you own. Press any number key that is next to the items in the inventory to swap the item with the item you bought.
->>>>>>> master
+

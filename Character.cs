@@ -65,6 +65,10 @@ namespace HelloWorld
         //loads data saved by the player
         public virtual bool Load(StreamReader reader)
         {
+            if(File.Exists("SavedData.txt") == false)
+            {
+                return false;
+            }
             string name = reader.ReadLine();
             float health = 0;
             float damage = 0;

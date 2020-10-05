@@ -437,6 +437,10 @@ namespace HelloWorld
         //Performed once when the game ends
         public void End()
         {
+            if(_player1.GetIsAlive(false))
+            {
+                Console.WriteLine("Game Over");
+            }
             Console.WriteLine("Congraulations! You've successfully completed your hard journey to the store, but... you forgot the milk, why did you buy a weapon again?");
             Console.WriteLine("\n");
             PrintPlayerInv(_player1.GetInv());

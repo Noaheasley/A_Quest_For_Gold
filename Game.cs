@@ -102,7 +102,7 @@ namespace HelloWorld
         public void Save()
         {
             //creates a new stream writer
-            StreamWriter writer = new StreamWriter("SaveData.txt");
+            StreamWriter writer = new StreamWriter("SavedData.txt");
             //call save for the player
             _player1.Save(writer);
             //closes stream
